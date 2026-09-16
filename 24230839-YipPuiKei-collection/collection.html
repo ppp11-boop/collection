@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evidence of Use - Digital Collection of Loss</title>
+  <style>
+    :root {
+      --paper: #f2efe8;
+      --ink: #1d1b18;
+      --muted: #6c675f;
+      --line: #cbc5bb;
+      --card: #faf8f3;
+      --accent: #9b3f2c;
+      --accent-soft: #ead8d1;
+      --ok: #2d6a4f;
+      --warn: #a15c00;
+      --shadow: 0 12px 30px rgba(45, 37, 28, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 5%, rgba(155, 63, 44, 0.09), transparent 30rem),
+        var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+    }
+
+    button, .meta, .eyebrow, .type, .count {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+
+    header { padding: 72px 0 40px; border-bottom: 1px solid var(--line); }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 750;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 14px 0 16px;
+      font-size: clamp(2.8rem, 7vw, 6.3rem);
+      font-weight: 500;
+      letter-spacing: -0.055em;
+      line-height: 0.94;
+    }
+
+    .deck { max-width: 720px; margin: 0; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.35rem); }
+
+    .progression {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      margin-top: 34px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .progression span:not(:last-child)::after { content: "\2192"; margin-left: 20px; color: var(--accent); }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px 0;
+      background: rgba(242, 239, 232, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 13px;
+      color: var(--ink);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+
+    button:hover, button.active { color: white; background: var(--ink); border-color: var(--ink); }
+
+    .count { color: var(--muted); font-size: 0.82rem; }
+
+    main { padding: 28px 0 78px; }
+
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
+
+    .record {
+      grid-column: span 6;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .record:nth-child(5n + 1), .record:nth-child(5n + 4) { grid-column: span 7; }
+    .record:nth-child(5n + 2), .record:nth-child(5n + 5) { grid-column: span 5; }
+
+    .media {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #ddd7cc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .media img { display: block; width: 100%; height: 360px; object-fit: cover; }
+    .media audio { width: calc(100% - 46px); }
+    .media pre { width: 100%; min-height: 260px; margin: 0; padding: 28px; white-space: pre-wrap; font: 1rem/1.65 Georgia, serif; background: #e8e2d8; }
+
+    .missing {
+      width: 100%;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: var(--muted);
+      font: 0.82rem/1.45 Inter, sans-serif;
+      text-align: center;
+      background: repeating-linear-gradient(-45deg, #e6e0d6, #e6e0d6 10px, #ded7cc 10px, #ded7cc 20px);
+    }
+
+    .body { padding: 24px; }
+
+    .topline { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+
+    .number { color: var(--accent); font-size: 0.8rem; font-weight: 750; letter-spacing: 0.12em; }
+
+    .type {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.67rem;
+      font-weight: 750;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h3 { margin: 9px 0 5px; font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.08; }
+
+    .description { margin: 0 0 20px; color: var(--muted); }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px 16px;
+      margin: 0;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-size: 0.78rem;
+    }
+
+    .meta div { min-width: 0; }
+    .meta dt { color: var(--muted); font-size: 0.66rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+    .meta dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+
+    .loss { margin-top: 18px; }
+    .loss strong { display: block; margin-bottom: 4px; color: var(--accent); font: 0.7rem Inter, sans-serif; letter-spacing: 0.09em; text-transform: uppercase; }
+    .loss p { margin: 0; font-style: italic; }
+
+    .fatal {
+      margin: 50px auto;
+      max-width: 720px;
+      padding: 26px;
+      border: 1px solid #b44;
+      border-radius: 12px;
+      background: #fff5f4;
+      font-family: Inter, sans-serif;
+    }
+
+    footer { padding: 28px 0 54px; color: var(--muted); border-top: 1px solid var(--line); font-size: 0.86rem; }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      header { padding-top: 48px; }
+      .record, .record:nth-child(n) { grid-column: 1 / -1; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .media img { height: 300px; }
+      .progression span:not(:last-child)::after { margin-left: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <div class="eyebrow">ARTT3005 / The Digital Collection of Loss</div>
+      <h1>Evidence of Use</h1>
+      <p class="deck">Twenty encounters with one toilet-paper roll as it moves from an ordinary object to a trace, and finally to absence.</p>
+      <div class="progression" aria-label="Collection progression">
+        <span>Presence</span><span>Use</span><span>Reduction</span><span>Fragment</span><span>Absence</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toolbar" aria-label="Record filters">
+      <div class="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="image">Images</button>
+        <button data-filter="sound">Sound</button>
+        <button data-filter="text">Text</button>
+      </div>
+      <div class="count" id="count">Loading records...</div>
+    </nav>
+
+    <main>
+      <div class="grid" id="collection" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="shell">One subject, recorded twenty times. The archive preserves evidence while admitting what it cannot hold.</div>
+  </footer>
+
+  <script>
+    let records = [];
+
+    function element(name, className, text) {
+      const node = document.createElement(name);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function mediaFallback(container, record) {
+      container.replaceChildren(element("div", "missing", `Add ${record.file} to the media folder.`));
+    }
+
+    async function createMedia(record) {
+      const wrapper = element("div", "media");
+
+      if (record.type === "image") {
+        const image = document.createElement("img");
+        image.src = record.file;
+        image.alt = record.title;
+        image.loading = "lazy";
+        image.addEventListener("error", () => mediaFallback(wrapper, record), { once: true });
+        wrapper.append(image);
+      } else if (record.type === "sound") {
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.preload = "metadata";
+        audio.src = record.file;
+        audio.addEventListener("error", () => mediaFallback(wrapper, record), { once: true });
+        wrapper.append(audio);
+      } else if (record.type === "text") {
+        try {
+          const response = await fetch(record.file, { cache: "no-store" });
+          if (!response.ok) throw new Error("missing");
+          wrapper.append(element("pre", "", await response.text()));
+        } catch {
+          mediaFallback(wrapper, record);
+        }
+      } else {
+        mediaFallback(wrapper, record);
+      }
+      return wrapper;
+    }
+
+    async function createCard(record) {
+      const card = element("article", "record");
+      card.dataset.type = record.type;
+      card.append(await createMedia(record));
+
+      const body = element("div", "body");
+      const topline = element("div", "topline");
+      topline.append(
+        element("span", "number", String(record.id).padStart(2, "0")),
+        element("span", "type", record.type)
+      );
+      body.append(topline, element("h3", "", record.title), element("p", "description", record.description || ""));
+
+      const metadata = element("dl", "meta");
+      [["Date and time", record.date]].forEach(([label, value]) => {
+        const item = document.createElement("div");
+        item.append(element("dt", "", label), element("dd", "", value));
+        metadata.append(item);
+      });
+      body.append(metadata);
+
+      const loss = element("div", "loss");
+      loss.append(element("strong", "", "Not captured"), element("p", "", record.not_captured));
+      body.append(loss);
+      card.append(body);
+      return card;
+    }
+
+    async function render(filter = "all") {
+      const grid = document.getElementById("collection");
+      const selected = filter === "all" ? records : records.filter(record => record.type === filter);
+      grid.replaceChildren();
+      for (const record of selected) grid.append(await createCard(record));
+      document.getElementById("count").textContent = `${selected.length} of ${records.length} records`;
+    }
+
+    document.querySelectorAll("[data-filter]").forEach(button => {
+      button.addEventListener("click", async () => {
+        document.querySelectorAll("[data-filter]").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        await render(button.dataset.filter);
+      });
+    });
+
+    async function start() {
+      try {
+        const response = await fetch("records.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        records = await response.json();
+        if (!Array.isArray(records)) throw new Error("records.json must contain a JSON array");
+        await render();
+      } catch (error) {
+        document.getElementById("collection").replaceChildren();
+        const message = element("div", "fatal");
+        message.append(element("strong", "", "The collection could not load."), element("p", "", "Open this folder through a local server and check that records.json contains valid JSON."), element("p", "", String(error.message)));
+        document.querySelector("main").append(message);
+        document.getElementById("count").textContent = "Load error";
+      }
+    }
+
+    start();
+  </script>
+</body>
+</html>
